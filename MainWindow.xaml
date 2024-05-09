@@ -1,0 +1,168 @@
+﻿<Window x:Class="FolderTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FolderTool"
+        mc:Ignorable="d"
+        Title="pseudo-mkdir" Height="235" Width="400" MinHeight="235" MinWidth="400">
+    <Window.Resources>
+        <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
+        <Style x:Key="GroupBoxWithHeaderAlign" TargetType="{x:Type GroupBox}">
+            <Setter Property="BorderBrush" Value="#D5DFE5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="6"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="6"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Grid.Column="0" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3"/>
+                            <Border BorderBrush="White" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                                    <Border BorderBrush="White" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                                </Border>
+                            </Border>
+                            <Border x:Name="Header" Grid.Column="2" Padding="3,1,3,0" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Center">
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                            <ContentPresenter Grid.ColumnSpan="2" Grid.Column="1" Margin="{TemplateBinding Padding}" Grid.Row="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NoHeaderGroupBox" TargetType="{x:Type GroupBox}">
+            <Setter Property="BorderBrush" Value="#D5DFE5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="6"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="6"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Grid.Column="0" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3"/>
+                            <Border BorderBrush="White" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                                    <Border BorderBrush="White" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                                </Border>
+                            </Border>
+                            <Border x:Name="Header" Grid.Column="1" Padding="3,1,3,0" Grid.Row="0" Grid.RowSpan="2">
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                            <ContentPresenter Grid.ColumnSpan="2" Grid.Column="1" Margin="{TemplateBinding Padding}" Grid.Row="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="5,0,5,5">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="5,0,5,0">
+            <TextBlock VerticalAlignment="Center">Name list</TextBlock>
+            <Separator Opacity="0" Margin="83,0,0,0"/>
+            <TextBlock VerticalAlignment="Center">Keep</TextBlock>
+            <Separator Opacity="0" Margin="3,0,0,0"/>
+            <CheckBox x:Name="checkKeep" VerticalAlignment="Center"></CheckBox>
+        </StackPanel>
+        
+
+        <ListBox Grid.Row="1" Margin="5,0,5,0" x:Name="lstName" MouseDown="lstName_MouseDown" KeyDown="OnKeyDownHandler_lstName">
+            <ListBox.Resources>
+
+                <!--Defines a context menu-->
+                <ContextMenu x:Key="MyElementMenu">
+                    <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
+                    <MenuItem Header="Rename" Click="MenuItemRename_Click"/>
+                    <MenuItem Header="Copy" Click="MenuItemCopy_Click"/>
+                </ContextMenu>
+
+                <!--Sets a context menu for each ListBoxItem in the current ListBox-->
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="ContextMenu" Value="{StaticResource MyElementMenu}"/>
+                </Style>
+
+            </ListBox.Resources>
+
+        </ListBox>
+
+        <Label Grid.Row="0" Grid.Column="1">Output directory</Label>
+
+        <StackPanel Grid.Row="2"  Margin="5,5,5,5">
+            <TextBox x:Name="txtName" KeyDown="OnKeyDownHandler_txtName"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="btnAdd" Margin="0,5,0,0" Click="ButtonAddName_Click" MinWidth="86" >Add name</Button>
+                <Separator Opacity="0" Width="5"/>
+                <Button x:Name="btnImport" Margin="0,5,0,0" Click="ButtonImport_Click" MinWidth="86">Import .txt list</Button>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,0" MinHeight="112">
+            <TextBox x:Name="txtPath" KeyDown="OnKeyDownHandler_txtPath"/>
+            <Button x:Name="btnBrowse" Margin="0,5,0,0" Click="ButtonBrowse_Click">Select output directory...</Button>
+            <Button x:Name="btnClear" Margin="0,5,0,0" Click="ButtonClear_Click">Clear list</Button>
+            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                <RadioButton x:Name="radFolder" GroupName ="ffswap" Margin="0,1,0,0" Click="RadioFolder_Click">folder</RadioButton>
+                <Separator Opacity="0" Width="5"/>
+                <RadioButton x:Name="radFile" GroupName="ffswap" Margin="0,1,0,0" Click="RadioFile_Click">file</RadioButton>
+                <Separator Opacity="0" Width="4"/>
+                <StackPanel x:Name="spType" Orientation="Horizontal" Visibility="Hidden">
+                    <TextBlock>| type:</TextBlock>
+                    <Separator Opacity="0" Width="5"/>
+                    <TextBox x:Name="txtType" Width="46" KeyDown="OnKeyDownHandler_txtType"></TextBox>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                <TextBlock VerticalAlignment="Center">Overwrite</TextBlock>
+                <Separator Opacity="0" Width="4"/>
+                <CheckBox x:Name="checkOverwrite" VerticalAlignment="Center"></CheckBox>
+                <Separator Opacity="0" Width="4"/>
+                <Button x:Name="btnMkDir" Click="ButtonMkDir_Click" MinWidth="102.5">Create</Button>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <GroupBox Grid.Row="2" Grid.Column="1" Margin="5,3,0,3" Width="120" HorizontalAlignment="Left" Style="{DynamicResource NoHeaderGroupBox}">
+                <TextBlock x:Name="tbResult" Margin="0,4,0,0" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" ></TextBlock>
+            </GroupBox>
+            <StackPanel>
+                <Button x:Name="btnOutput" Margin="5,5,5,0" MinWidth="52" Visibility="Hidden" Click="ButtonOutput_Click">Output</Button>
+                <Button x:Name="btnAbout" Margin="5,5,5,0" MinWidth="52" Click="ButtonAbout_Click" HorizontalAlignment="Left">About</Button>
+            </StackPanel>
+        </StackPanel>
+        
+    </Grid>
+</Window>
+ 
